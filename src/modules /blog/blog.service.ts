@@ -121,4 +121,72 @@ export class BlogService {
     });
     return { message: 'Blog deleted successfully' };
   }
+  async getindivisualBlog(blogId: number) {
+    const blog = await this.prisma.blog.findFirst({
+      where: {
+        id: blogId,
+      },
+      select: {
+        title: true,
+        description: true,
+        imageUrl: true,
+        createdAt: true,
+        updatedAt: true,
+        author: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            profileImage: true,
+          },
+        },
+        comments: {
+          select: {
+            content: true,
+            createdAt: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+                profileImage: true,
+              },
+            },
+            replies: {
+              select: {
+                content: true,
+                createdAt: true,
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    profileImage: true,
+                  },
+                },
+              },
+              orderBy: { createdAt: 'desc' },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+    if (!blog) {
+      throw new HttpException('Blog not found', 404);
+    }
+    blog.imageUrl = ENV.URL.BASE_URL_BLOG + blog.imageUrl;
+    blog.author.profileImage = ENV.URL.BASE_URL + blog.author.profileImage;
+    blog.comments = blog.comments.map((comment) => {
+      comment.user.profileImage = ENV.URL.BASE_URL + comment.user.profileImage;
+
+      comment.replies = comment.replies.map((reply) => {
+        reply.user.profileImage = ENV.URL.BASE_URL + reply.user.profileImage;
+        return reply;
+      });
+
+      return comment;
+    });
+    return blog;
+  }
 }

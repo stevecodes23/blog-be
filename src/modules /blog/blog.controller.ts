@@ -161,4 +161,12 @@ export class BlogController extends BaseController {
       await this.blogService.deleteBlog(blogId, userId),
     );
   }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('/:id')
+  async getindivisualBlog(@Param('id', ParseIntPipe) blogId: number) {
+    return this.standardResponse(
+      await this.blogService.getindivisualBlog(blogId),
+    );
+  }
 }

@@ -39,7 +39,7 @@ model Blog {
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
   createdById Int
-  user        User      @relation(fields: [createdById], references: [id])
+  author        User      @relation(fields: [createdById], references: [id])
   comments    Comment[]
 }
 
