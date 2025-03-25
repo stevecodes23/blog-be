@@ -163,20 +163,24 @@ export class BlogController extends BaseController {
       await this.blogService.deleteBlog(blogId, userId),
     );
   }
+  
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
-  @Get('/:id')
+  @Get('/lisitng')
+  async getBlogs() {
+    console.log("reaching here")
+    return this.standardResponse(await this.blogService.getBlogs());
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('/indivisual/:id')
   async getindivisualBlog(@Param('id', ParseIntPipe) blogId: number) {
     return this.standardResponse(
       await this.blogService.getindivisualBlog(blogId),
     );
   }
-  @ApiBearerAuth()
-  @Roles(Role.ADMIN, Role.USER)
-  @Get('/blog-lisitng')
-  async getBlogs() {
-    return this.standardResponse(await this.blogService.getBlogs());
-  }
+
+ 
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
   @Post('/comments/:id')
