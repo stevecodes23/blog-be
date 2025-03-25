@@ -15,7 +15,6 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles) return true;
 
     const { user: tokenInfo } = context.switchToHttp().getRequest();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return requiredRoles.includes(tokenInfo.type);
   }
 }

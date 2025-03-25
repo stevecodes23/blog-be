@@ -21,4 +21,7 @@ export const ENV = {
     EXPIRY: getEnvVariable('JWT_EXPIRY'),
     SECRET: getEnvVariable('JWT_AUTHSECRET'),
   },
+  URL: {
+    BASE_URL: getEnvVariable('BASE_URL'),
+  },
 };

@@ -15,8 +15,11 @@ import { SignUpDto } from './dto/signup.dto';
 import { AuthService } from './auth.service';
 import { BaseController } from 'core/base.controller';
 import { Public } from 'src/decorator/public.decorator';
-import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
+import { Roles } from 'src/decorator/roles.decorator';
+import { Role } from '@prisma/client';
+import { GetUser } from 'src/decorator/get-user.decorator';
 
 @Controller('auth')
 export class AuthController extends BaseController {
@@ -80,5 +83,11 @@ export class AuthController extends BaseController {
   @Post('/login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Post('/self')
+  selfdetails(@GetUser('id') userId: number) {
+    return this.authService.selfdetails(userId);
   }
 }

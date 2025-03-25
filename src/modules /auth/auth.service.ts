@@ -70,4 +70,21 @@ export class AuthService {
         );
     }
   }
+  async selfdetails(userId: number) {
+    const userdetails = await this.prisma.user.findFirst({
+      where: { id: userId },
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        profileImage: true,
+      },
+    });
+    if (!userdetails)
+      throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+    return {
+      ...userdetails,
+      profileImageUrl: ENV.URL.BASE_URL + userdetails.profileImage,
+    };
+  }
 }
