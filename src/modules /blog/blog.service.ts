@@ -99,4 +99,26 @@ export class BlogService {
     });
     return blogs;
   }
+  async deleteBlog(blogId: number, userId: number) {
+    const blog = await this.prisma.blog.findFirst({
+      where: {
+        id: blogId,
+      },
+    });
+    if (!blog) {
+      throw new HttpException('Blog not found', 404);
+    }
+    if (blog.createdById !== userId) {
+      throw new HttpException('Unauthorized to delete this blog', 401);
+    }
+    await this.prisma.blog.update({
+      where: {
+        id: blogId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    return { message: 'Blog deleted successfully' };
+  }
 }

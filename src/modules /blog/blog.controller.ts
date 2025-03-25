@@ -150,4 +150,15 @@ export class BlogController extends BaseController {
   async myBlogs(@GetUser('id') userId: number) {
     return this.standardResponse(await this.blogService.getMyblogs(userId));
   }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('deleteblog/:id')
+  async deleteBlog(
+    @Param('id', ParseIntPipe) blogId: number,
+    @GetUser('id') userId: number,
+  ) {
+    return this.standardResponse(
+      await this.blogService.deleteBlog(blogId, userId),
+    );
+  }
 }
