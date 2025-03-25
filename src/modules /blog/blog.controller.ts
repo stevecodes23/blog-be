@@ -169,4 +169,10 @@ export class BlogController extends BaseController {
       await this.blogService.getindivisualBlog(blogId),
     );
   }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('/blog-lisitng')
+  async getBlogs() {
+    return this.standardResponse(await this.blogService.getBlogs());
+  }
 }

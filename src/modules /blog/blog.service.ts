@@ -189,4 +189,30 @@ export class BlogService {
     });
     return blog;
   }
+  async getBlogs(){
+    const blogs = await this.prisma.blog.findMany({
+      select: {
+        title: true,
+        description: true,
+        imageUrl: true,
+        createdAt: true,
+        updatedAt: true,
+        author: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            profileImage: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    blogs.map((blogs) => {
+      blogs.imageUrl = ENV.URL.BASE_URL_BLOG + blogs.imageUrl;
+      blogs.author.profileImage = ENV.URL.BASE_URL + blogs.author.profileImage;
+      return blogs;
+    });
+    return blogs;
+  }
 }
