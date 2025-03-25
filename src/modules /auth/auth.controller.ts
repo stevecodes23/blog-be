@@ -7,6 +7,7 @@ import {
   BadRequestException,
   HttpException,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -15,11 +16,17 @@ import { SignUpDto } from './dto/signup.dto';
 import { AuthService } from './auth.service';
 import { BaseController } from 'core/base.controller';
 import { Public } from 'src/decorator/public.decorator';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { Roles } from 'src/decorator/roles.decorator';
 import { Role } from '@prisma/client';
 import { GetUser } from 'src/decorator/get-user.decorator';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController extends BaseController {
@@ -65,7 +72,7 @@ export class AuthController extends BaseController {
         password: { type: 'string', example: 'StrongPassword123' },
         profileImage: {
           type: 'string',
-          format: 'binary', 
+          format: 'binary',
         },
       },
     },
@@ -89,5 +96,14 @@ export class AuthController extends BaseController {
   @Post('/self')
   selfdetails(@GetUser('id') userId: number) {
     return this.authService.selfdetails(userId);
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Patch('/reset-password')
+  resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @GetUser('id') userId: number,
+  ) {
+    return this.authService.resetPassword(userId, resetPasswordDto);
   }
 }

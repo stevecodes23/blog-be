@@ -6,6 +6,7 @@ import { Role } from '@prisma/client';
 import { LoginDto } from './dto/login.dto';
 import { ENV } from 'src/constants/env.constant';
 import { JwtService } from '@nestjs/jwt';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -86,5 +87,34 @@ export class AuthService {
       ...userdetails,
       profileImageUrl: ENV.URL.BASE_URL + userdetails.profileImage,
     };
+  }
+  async resetPassword(id: number, resetPasswordDto: ResetPasswordDto) {
+    try {
+      const userToUpdate = await this.prisma.user.findFirst({
+        where: { id: Number(id) },
+      });
+      if (!userToUpdate)
+        throw new HttpException('User Does Not Exist', HttpStatus.NOT_FOUND);
+      const passwordValid = await compareHash(
+        resetPasswordDto.previousPassword,
+        userToUpdate.password,
+      );
+      if (!passwordValid)
+        throw new HttpException('Incorrect Password', HttpStatus.UNAUTHORIZED);
+      const password = await generateHash(resetPasswordDto.currentPassword);
+      await this.prisma.user.update({
+        where: { id: Number(id) },
+        data: { password: password },
+      });
+      return {};
+    } catch (error) {
+      if (error.status)
+        throw new HttpException(error.message, error.getStatus());
+      else
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+    }
   }
 }
