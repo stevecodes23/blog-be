@@ -71,6 +71,7 @@ export class BlogController extends BaseController {
       properties: {
         title: { type: 'string', example: 'abc' },
         description: { type: 'string', example: 'abc' },
+        blogContent: { type: 'string', example: 'abc' },
         profileImage: {
           type: 'string',
           format: 'binary',
@@ -123,6 +124,7 @@ export class BlogController extends BaseController {
       properties: {
         title: { type: 'string', example: 'abc' },
         description: { type: 'string', example: 'abc' },
+        blogContent: { type: 'string', example: 'abc' },
         profileImage: {
           type: 'string',
           format: 'binary',
@@ -154,7 +156,7 @@ export class BlogController extends BaseController {
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
-  @Get('deleteblog/:id')
+  @Get('delete-blog/:id')
   async deleteBlog(
     @Param('id', ParseIntPipe) blogId: number,
     @GetUser('id') userId: number,
@@ -163,12 +165,11 @@ export class BlogController extends BaseController {
       await this.blogService.deleteBlog(blogId, userId),
     );
   }
-  
+
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
   @Get('/lisitng')
   async getBlogs() {
-    console.log("reaching here")
     return this.standardResponse(await this.blogService.getBlogs());
   }
   @ApiBearerAuth()
@@ -180,7 +181,6 @@ export class BlogController extends BaseController {
     );
   }
 
- 
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
   @Post('/comments/:id')
