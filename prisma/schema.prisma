@@ -12,3 +12,61 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  profileImage String?
+  firstName    String
+  lastName     String
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+  role         Role      @default(USER)
+  blogs        Blog[]
+  comments     Comment[]
+  reply        Reply[]
+}
+
+model Blog {
+  id          Int       @id @default(autoincrement())
+  title       String
+  imageUrl    String?
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdById Int
+  user        User      @relation(fields: [createdById], references: [id])
+  comments    Comment[]
+}
+
+model Comment {
+  id            Int       @id @default(autoincrement())
+  content       String
+  createdAt     DateTime  @default(now())
+  deletedAt     DateTime?
+  commentedById Int
+  blogId        Int
+  user          User      @relation(fields: [commentedById], references: [id])
+  blog          Blog      @relation(fields: [blogId], references: [id])
+  replies       Reply[]
+}
+
+model Reply {
+  id           Int       @id @default(autoincrement())
+  content      String
+  createdAt    DateTime  @default(now())
+  deletedAt    DateTime?
+  replyiedById Int
+  commentId    Int
+  user         User      @relation(fields: [replyiedById], references: [id])
+  comment      Comment   @relation(fields: [commentId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  USER
+}
