@@ -90,24 +90,24 @@ export class AuthController extends BaseController {
   }
   @Public()
   @Post('/login')
-  login(@Body() loginDto: LoginDto) {
-    return this.standardResponse(this.authService.login(loginDto));
+  async login(@Body() loginDto: LoginDto) {
+    return this.standardResponse(await this.authService.login(loginDto));
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
   @Post('/self')
-  selfdetails(@GetUser('id') userId: number) {
-    return this.standardResponse(this.authService.selfdetails(userId));
+  async selfdetails(@GetUser('id') userId: number) {
+    return this.standardResponse(await this.authService.selfdetails(userId));
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
   @Patch('/reset-password')
-  resetPassword(
+  async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
     @GetUser('id') userId: number,
   ) {
     return this.standardResponse(
-      this.authService.resetPassword(userId, resetPasswordDto),
+      await this.authService.resetPassword(userId, resetPasswordDto),
     );
   }
 }
