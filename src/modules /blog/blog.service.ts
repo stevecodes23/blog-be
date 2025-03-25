@@ -3,6 +3,7 @@ import { PrismaService } from 'src/services/prisma.service';
 import { CreateBlog } from './dto/create-blog.dto';
 import { ENV } from 'src/constants/env.constant';
 import { UpdateBlog } from './dto/update-blog.dto';
+import { CreateComment } from './dto/create-comment.dto';
 
 @Injectable()
 export class BlogService {
@@ -189,7 +190,7 @@ export class BlogService {
     });
     return blog;
   }
-  async getBlogs(){
+  async getBlogs() {
     const blogs = await this.prisma.blog.findMany({
       select: {
         title: true,
@@ -214,5 +215,77 @@ export class BlogService {
       return blogs;
     });
     return blogs;
+  }
+  async addcomments(
+    createComment: CreateComment,
+    blogId: number,
+    userId: number,
+  ) {
+    const blog = await this.prisma.blog.findFirst({
+      where: {
+        id: blogId,
+      },
+    });
+    if (!blog) {
+      throw new HttpException('Blog not found', 404);
+    }
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+    const comment = await this.prisma.comment.create({
+      data: {
+        content: createComment.content,
+        blogId: blogId,
+        commentedById: userId,
+      },
+    });
+    return {
+      content: comment.content,
+      createdAt: comment.createdAt,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
+    };
+  }
+  async replyToComments(
+    createComment: CreateComment,
+    commentId: number,
+    userId: number,
+  ) {
+    const comment = await this.prisma.comment.findFirst({
+      where: {
+        id: commentId,
+      },
+    });
+    if (!comment) {
+      throw new HttpException('Comment not found', 404);
+    }
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
+    const reply = await this.prisma.reply.create({
+      data: {
+        content: createComment.content,
+        commentId: commentId,
+        replyiedById: userId,
+      },
+    });
+    return {
+      content: reply.content,
+      createdAt: reply.createdAt,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      },
+    };
   }
 }

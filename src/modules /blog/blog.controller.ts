@@ -26,6 +26,7 @@ import {
 import { CreateBlog } from './dto/create-blog.dto';
 import { GetUser } from 'src/decorator/get-user.decorator';
 import { UpdateBlog } from './dto/update-blog.dto';
+import { CreateComment } from './dto/create-comment.dto';
 
 @Controller('blog')
 export class BlogController extends BaseController {
@@ -174,5 +175,29 @@ export class BlogController extends BaseController {
   @Get('/blog-lisitng')
   async getBlogs() {
     return this.standardResponse(await this.blogService.getBlogs());
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Post('/comments/:id')
+  async addcomments(
+    @Param('id', ParseIntPipe) blogId: number,
+    @Body() createComment: CreateComment,
+    @GetUser('id') userId: number,
+  ) {
+    return this.standardResponse(
+      await this.blogService.addcomments(createComment, blogId, userId),
+    );
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Post('/reply-comments/:id')
+  async replyToComments(
+    @Param('id', ParseIntPipe) commentId: number,
+    @Body() createComment: CreateComment,
+    @GetUser('id') userId: number,
+  ) {
+    return this.standardResponse(
+      await this.blogService.replyToComments(createComment, commentId, userId),
+    );
   }
 }
