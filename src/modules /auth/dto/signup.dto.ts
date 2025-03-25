@@ -15,7 +15,7 @@ export class SignUpDto {
   @IsNotEmpty({
     message: 'First Name should not be empty',
   } as ValidationOptions)
-  LastName: string;
+  lastName: string;
 
   @IsString()
   @IsNotEmpty()

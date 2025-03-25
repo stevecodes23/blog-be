@@ -16,6 +16,7 @@ import { AuthService } from './auth.service';
 import { BaseController } from 'core/base.controller';
 import { Public } from 'src/decorator/public.decorator';
 import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController extends BaseController {
@@ -74,5 +75,10 @@ export class AuthController extends BaseController {
       throw new BadRequestException('Profile image is required');
     }
     return await this.authService.createuser(signupDto, file.filename);
+  }
+  @Public()
+  @Post('/login')
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 }
