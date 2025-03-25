@@ -23,5 +23,6 @@ export const ENV = {
   },
   URL: {
     BASE_URL: getEnvVariable('BASE_URL'),
+    BASE_URL_BLOG: getEnvVariable('BASE_URL_BLOG'),
   },
 };
