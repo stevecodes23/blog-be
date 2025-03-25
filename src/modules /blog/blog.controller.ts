@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Param,
@@ -141,5 +142,12 @@ export class BlogController extends BaseController {
         file?.filename,
       ),
     );
+  }
+
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('myblogs')
+  async myBlogs(@GetUser('id') userId: number) {
+    return this.standardResponse(await this.blogService.getMyblogs(userId));
   }
 }

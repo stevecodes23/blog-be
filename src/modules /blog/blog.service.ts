@@ -74,4 +74,29 @@ export class BlogService {
       imageUrl: imageName ? ENV.URL.BASE_URL_BLOG + imageName : null,
     };
   }
+  async getMyblogs(userId) {
+    const blogs = await this.prisma.blog.findMany({
+      where: {
+        createdById: userId,
+      },
+      select: {
+        title: true,
+        description: true,
+        imageUrl: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    if (blogs.length > 0) {
+      blogs.map((blogs) => {
+        blogs.imageUrl = ENV.URL.BASE_URL_BLOG + blogs.imageUrl;
+        return blogs;
+      });
+    }
+    blogs.map((blogs) => {
+      blogs.imageUrl = ENV.URL.BASE_URL_BLOG + blogs.imageUrl;
+      return blogs;
+    });
+    return blogs;
+  }
 }
