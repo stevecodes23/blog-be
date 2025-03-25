@@ -21,6 +21,7 @@ export class BlogService {
         description: createBlog.description,
         imageUrl: imageName ?? null,
         createdById: userId,
+        blogContent: createBlog.blogContent,
       },
       select: {
         title: true,
@@ -64,6 +65,7 @@ export class BlogService {
         description: updateBlog.description,
         imageUrl: imageName ?? null,
         createdById: userId,
+        blogContent: updateBlog.blogContent,
       },
       select: {
         title: true,
@@ -83,6 +85,7 @@ export class BlogService {
       select: {
         title: true,
         description: true,
+        blogContent: true,
         imageUrl: true,
         createdAt: true,
         updatedAt: true,
@@ -132,6 +135,7 @@ export class BlogService {
         title: true,
         description: true,
         imageUrl: true,
+        blogContent: true,
         createdAt: true,
         updatedAt: true,
         author: {

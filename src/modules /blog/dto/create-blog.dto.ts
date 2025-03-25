@@ -7,4 +7,7 @@ export class CreateBlog {
   @IsNotEmpty()
   @IsString()
   description: string;
+  @IsNotEmpty()
+  @IsString()
+  blogContent: string;
 }
