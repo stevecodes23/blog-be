@@ -224,4 +224,10 @@ export class BlogController extends BaseController {
       await this.blogService.deleteComment(commentId, userId),
     );
   }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('/comments/:id')
+  async getComments(@Param('id', ParseIntPipe) blogId: number) {
+    return this.standardResponse(await this.blogService.getComments(blogId));
+  }
 }

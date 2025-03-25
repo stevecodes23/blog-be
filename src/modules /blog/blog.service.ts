@@ -339,4 +339,52 @@ export class BlogService {
     });
     return { message: 'Reply deleted successfully' };
   }
+  async getComments(blogId: number) {
+    const comments = await this.prisma.comment.findMany({
+      where: {
+        blogId: blogId,
+        deletedAt: null,
+      },
+      select: {
+        content: true,
+        createdAt: true,
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            profileImage: true,
+          },
+        },
+        replies: {
+          where: {
+            deletedAt: null,
+          },
+          select: {
+            content: true,
+            createdAt: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+                profileImage: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    comments.map((comment) => {
+      comment.user.profileImage = ENV.URL.BASE_URL + comment.user.profileImage;
+      comment.replies = comment.replies.map((reply) => {
+        reply.user.profileImage = ENV.URL.BASE_URL + reply.user.profileImage;
+        return reply;
+      });
+      return comment;
+    });
+    return comments;
+  }
 }
