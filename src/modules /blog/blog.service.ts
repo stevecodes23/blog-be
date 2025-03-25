@@ -126,6 +126,7 @@ export class BlogService {
     const blog = await this.prisma.blog.findFirst({
       where: {
         id: blogId,
+        deletedAt: null,
       },
       select: {
         title: true,
@@ -142,6 +143,9 @@ export class BlogService {
           },
         },
         comments: {
+          where: {
+            deletedAt: null,
+          },
           select: {
             content: true,
             createdAt: true,
@@ -154,6 +158,9 @@ export class BlogService {
               },
             },
             replies: {
+              where: {
+                deletedAt: null,
+              },
               select: {
                 content: true,
                 createdAt: true,
