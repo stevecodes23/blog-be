@@ -84,18 +84,20 @@ export class AuthController extends BaseController {
     if (!file) {
       throw new BadRequestException('Profile image is required');
     }
-    return await this.authService.createuser(signupDto, file.filename);
+    return this.standardResponse(
+      await this.authService.createuser(signupDto, file.filename),
+    );
   }
   @Public()
   @Post('/login')
   login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+    return this.standardResponse(this.authService.login(loginDto));
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
   @Post('/self')
   selfdetails(@GetUser('id') userId: number) {
-    return this.authService.selfdetails(userId);
+    return this.standardResponse(this.authService.selfdetails(userId));
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.USER)
@@ -104,6 +106,8 @@ export class AuthController extends BaseController {
     @Body() resetPasswordDto: ResetPasswordDto,
     @GetUser('id') userId: number,
   ) {
-    return this.authService.resetPassword(userId, resetPasswordDto);
+    return this.standardResponse(
+      this.authService.resetPassword(userId, resetPasswordDto),
+    );
   }
 }
