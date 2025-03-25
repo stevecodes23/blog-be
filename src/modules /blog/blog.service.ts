@@ -83,6 +83,7 @@ export class BlogService {
         createdById: userId,
       },
       select: {
+        id: true,
         title: true,
         description: true,
         blogContent: true,
@@ -132,6 +133,7 @@ export class BlogService {
         deletedAt: null,
       },
       select: {
+        id: true,
         title: true,
         description: true,
         imageUrl: true,
@@ -151,6 +153,7 @@ export class BlogService {
             deletedAt: null,
           },
           select: {
+            id: true,
             content: true,
             createdAt: true,
             user: {
@@ -166,6 +169,7 @@ export class BlogService {
                 deletedAt: null,
               },
               select: {
+                id: true,
                 content: true,
                 createdAt: true,
                 user: {
@@ -204,6 +208,7 @@ export class BlogService {
   async getBlogs() {
     const blogs = await this.prisma.blog.findMany({
       select: {
+        id: true,
         title: true,
         description: true,
         imageUrl: true,
@@ -350,6 +355,7 @@ export class BlogService {
         deletedAt: null,
       },
       select: {
+        id: true,
         content: true,
         createdAt: true,
         user: {
