@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -198,6 +199,29 @@ export class BlogController extends BaseController {
   ) {
     return this.standardResponse(
       await this.blogService.replyToComments(createComment, commentId, userId),
+    );
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Delete('/reply-comments/:id')
+  async deleteReply(
+    @Param('id', ParseIntPipe) commentId: number,
+    @GetUser('id') userId: number,
+  ) {
+    return this.standardResponse(
+      await this.blogService.deleteReply(commentId, userId),
+    );
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.USER)
+  @Delete('/comments/:id')
+  async deleteComment(
+    @Param('id', ParseIntPipe) commentId: number,
+    @Body() createComment: CreateComment,
+    @GetUser('id') userId: number,
+  ) {
+    return this.standardResponse(
+      await this.blogService.deleteComment(commentId, userId),
     );
   }
 }

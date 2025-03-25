@@ -288,4 +288,48 @@ export class BlogService {
       },
     };
   }
+  async deleteComment(commentId: number, userId: number) {
+    const comment = await this.prisma.comment.findFirst({
+      where: {
+        id: commentId,
+      },
+    });
+    if (!comment) {
+      throw new HttpException('Comment not found', 404);
+    }
+    if (comment.commentedById !== userId) {
+      throw new HttpException('Unauthorized to delete this comment', 401);
+    }
+    await this.prisma.comment.update({
+      where: {
+        id: commentId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    return { message: 'Comment deleted successfully' };
+  }
+  async deleteReply(replyId: number, userId: number) {
+    const reply = await this.prisma.reply.findFirst({
+      where: {
+        id: replyId,
+      },
+    });
+    if (!reply) {
+      throw new HttpException('Reply not found', 404);
+    }
+    if (reply.replyiedById !== userId) {
+      throw new HttpException('Unauthorized to delete this reply', 401);
+    }
+    await this.prisma.reply.update({
+      where: {
+        id: replyId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    return { message: 'Reply deleted successfully' };
+  }
 }
